@@ -28,6 +28,71 @@
       <li>GitHub: <a href="https://github.com/yourusername" target="_blank">yourusername</a></li>
     </ul>
   </section>
+<script>
+    const items = Array.from({ length: 42 }, (_, i) => `第 ${i + 1} 筆資料`);
+    const itemsPerPage = 5;
+    let currentPage = 1;
+
+    function displayItems(page) {
+      const start = (page - 1) * itemsPerPage;
+      const end = start + itemsPerPage;
+      const paginatedItems = items.slice(start, end);
+
+      const container = document.getElementById('itemContainer');
+      container.innerHTML = paginatedItems.map(item => `
+        <div class="border-bottom py-2">${item}</div>
+      `).join('');
+    }
+
+    function setupPagination() {
+      const pageCount = Math.ceil(items.length / itemsPerPage);
+      const pagination = document.getElementById('pagination');
+      pagination.innerHTML = '';
+
+      // 上一頁
+      const prevBtn = document.createElement('li');
+      prevBtn.className = `page-item ${currentPage === 1 ? 'disabled' : ''}`;
+      prevBtn.innerHTML = `<a class="page-link" href="#">上一頁</a>`;
+      prevBtn.addEventListener('click', () => {
+        if (currentPage > 1) {
+          currentPage--;
+          displayItems(currentPage);
+          setupPagination();
+        }
+      });
+      pagination.appendChild(prevBtn);
+
+      // 頁數按鈕
+      for (let i = 1; i <= pageCount; i++) {
+        const pageBtn = document.createElement('li');
+        pageBtn.className = `page-item ${i === currentPage ? 'active' : ''}`;
+        pageBtn.innerHTML = `<a class="page-link" href="#">${i}</a>`;
+        pageBtn.addEventListener('click', () => {
+          currentPage = i;
+          displayItems(currentPage);
+          setupPagination();
+        });
+        pagination.appendChild(pageBtn);
+      }
+
+      // 下一頁
+      const nextBtn = document.createElement('li');
+      nextBtn.className = `page-item ${currentPage === pageCount ? 'disabled' : ''}`;
+      nextBtn.innerHTML = `<a class="page-link" href="#">下一頁</a>`;
+      nextBtn.addEventListener('click', () => {
+        if (currentPage < pageCount) {
+          currentPage++;
+          displayItems(currentPage);
+          setupPagination();
+        }
+      });
+      pagination.appendChild(nextBtn);
+    }
+
+    // 初始化
+    displayItems(currentPage);
+    setupPagination();
+  </script>
 
   <footer>
     <p>©我的個人網站</p>
